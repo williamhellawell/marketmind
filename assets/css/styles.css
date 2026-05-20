@@ -113,8 +113,8 @@ button {
 
 .brand {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .brand-mark {
