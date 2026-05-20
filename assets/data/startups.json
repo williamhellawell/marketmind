@@ -19,15 +19,22 @@
       "open_roles": 38,
       "funding": {
         "total_eur_m": 510,
-        "last_round": {
-          "stage": "Series B",
-          "amount_eur_m": 307,
-          "date": "2025-12",
-          "lead": "CapitalG, Menlo Ventures"
-        },
+        "last_round": { "stage": "Series B", "amount_eur_m": 307, "date": "2025-12", "lead": "CapitalG, Menlo Ventures" },
         "valuation_eur_b": 6.14,
         "notable_investors": ["CapitalG", "Menlo Ventures", "Accel", "NVentures", "Salesforce Ventures", "Databricks Ventures"]
       },
+      "funding_rounds": [
+        { "stage": "Pre-seed", "date": "2023-10", "amount_eur_m": 3 },
+        { "stage": "Series A", "date": "2024-07", "amount_eur_m": 14 },
+        { "stage": "Series A2", "date": "2025-05", "amount_eur_m": 186 },
+        { "stage": "Series B", "date": "2025-12", "amount_eur_m": 307 }
+      ],
+      "arr_history": [
+        { "date": "2024-12", "value_eur_m": 10 },
+        { "date": "2025-06", "value_eur_m": 65 },
+        { "date": "2025-11", "value_eur_m": 186 },
+        { "date": "2026-05", "value_eur_m": 186 }
+      ],
       "product": {
         "key_products": ["Lovable app builder", "Lovable Cloud"],
         "target_market": "Indie builders, startups, SMB product teams"
@@ -57,15 +64,25 @@
       "open_roles": 92,
       "funding": {
         "total_eur_m": 715,
-        "last_round": {
-          "stage": "Series D",
-          "amount_eur_m": 465,
-          "date": "2026-02",
-          "lead": "Sequoia Capital"
-        },
+        "last_round": { "stage": "Series D", "amount_eur_m": 465, "date": "2026-02", "lead": "Sequoia Capital" },
         "valuation_eur_b": 10.23,
         "notable_investors": ["Sequoia Capital", "Andreessen Horowitz", "ICONIQ Growth", "Lightspeed Venture Partners", "NEA", "Bond"]
       },
+      "funding_rounds": [
+        { "stage": "Seed", "date": "2022-11", "amount_eur_m": 2 },
+        { "stage": "Series A", "date": "2023-06", "amount_eur_m": 18 },
+        { "stage": "Series B", "date": "2024-01", "amount_eur_m": 74 },
+        { "stage": "Series C", "date": "2025-01", "amount_eur_m": 167 },
+        { "stage": "Series D", "date": "2026-02", "amount_eur_m": 465 }
+      ],
+      "arr_history": [
+        { "date": "2023-12", "value_eur_m": 12 },
+        { "date": "2024-06", "value_eur_m": 40 },
+        { "date": "2024-12", "value_eur_m": 100 },
+        { "date": "2025-06", "value_eur_m": 200 },
+        { "date": "2025-12", "value_eur_m": 350 },
+        { "date": "2026-02", "value_eur_m": 465 }
+      ],
       "product": {
         "key_products": ["TTS", "Conversational Agents", "Dubbing Studio", "Sound Effects", "Music"],
         "target_market": "Media, enterprise, developers, gaming"
@@ -96,15 +113,23 @@
       "open_roles": 145,
       "funding": {
         "total_eur_m": 2837,
-        "last_round": {
-          "stage": "Debt financing",
-          "amount_eur_m": 772,
-          "date": "2026-03",
-          "lead": "Undisclosed lenders"
-        },
+        "last_round": { "stage": "Debt financing", "amount_eur_m": 772, "date": "2026-03", "lead": "Undisclosed lenders" },
         "valuation_eur_b": 12.74,
         "notable_investors": ["General Catalyst", "Lightspeed", "Andreessen Horowitz", "Nvidia", "Eurazeo", "Bertelsmann"]
       },
+      "funding_rounds": [
+        { "stage": "Seed", "date": "2023-06", "amount_eur_m": 97 },
+        { "stage": "Series A", "date": "2023-12", "amount_eur_m": 357 },
+        { "stage": "Series B", "date": "2024-06", "amount_eur_m": 557 },
+        { "stage": "Debt", "date": "2026-03", "amount_eur_m": 772 }
+      ],
+      "arr_history": [
+        { "date": "2023-12", "value_eur_m": 15 },
+        { "date": "2024-06", "value_eur_m": 50 },
+        { "date": "2024-12", "value_eur_m": 100 },
+        { "date": "2025-12", "value_eur_m": 180 },
+        { "date": "2026-03", "value_eur_m": 220 }
+      ],
       "product": {
         "key_products": ["Le Chat", "Mistral Large 2", "Codestral", "Mistral Embed", "La Plateforme"],
         "target_market": "Developers, enterprise, government"
@@ -135,15 +160,21 @@
       "open_roles": 24,
       "funding": {
         "total_eur_m": 62.7,
-        "last_round": {
-          "stage": "Series B",
-          "amount_eur_m": 42.9,
-          "date": "2026-05",
-          "lead": "Left Lane Capital"
-        },
+        "last_round": { "stage": "Series B", "amount_eur_m": 42.9, "date": "2026-05", "lead": "Left Lane Capital" },
         "valuation_eur_b": 0.32,
         "notable_investors": ["Left Lane Capital", "Base10 Partners", "Eurazeo", "Acurio Ventures", "Entourage"]
       },
+      "funding_rounds": [
+        { "stage": "Pre-seed", "date": "2024-06", "amount_eur_m": 0.5 },
+        { "stage": "Seed", "date": "2025-03", "amount_eur_m": 2 },
+        { "stage": "Series A", "date": "2025-09", "amount_eur_m": 16 },
+        { "stage": "Series B", "date": "2026-05", "amount_eur_m": 42.9 }
+      ],
+      "arr_history": [
+        { "date": "2025-09", "value_eur_m": 2 },
+        { "date": "2025-12", "value_eur_m": 5 },
+        { "date": "2026-05", "value_eur_m": 14 }
+      ],
       "product": {
         "key_products": ["Lexroom Research", "Lexroom Drafting", "Lexroom Review"],
         "target_market": "Law firms and in-house legal teams in civil-law Europe"
@@ -173,15 +204,23 @@
       "open_roles": 110,
       "funding": {
         "total_eur_m": 1830,
-        "last_round": {
-          "stage": "Series E",
-          "amount_eur_m": 1116,
-          "date": "2026-05",
-          "lead": "Dragoneer Investment Group"
-        },
+        "last_round": { "stage": "Series E", "amount_eur_m": 1116, "date": "2026-05", "lead": "Dragoneer Investment Group" },
         "valuation_eur_b": 16.74,
         "notable_investors": ["Dragoneer", "Lightspeed Venture Partners", "Prima Materia", "Accel", "General Catalyst", "SAAB"]
       },
+      "funding_rounds": [
+        { "stage": "Series A", "date": "2021-06", "amount_eur_m": 100 },
+        { "stage": "Series B", "date": "2022-11", "amount_eur_m": 200 },
+        { "stage": "Series C", "date": "2024-07", "amount_eur_m": 420 },
+        { "stage": "Series D", "date": "2025-06", "amount_eur_m": 600 },
+        { "stage": "Series E", "date": "2026-05", "amount_eur_m": 510 }
+      ],
+      "arr_history": [
+        { "date": "2022-12", "value_eur_m": 30 },
+        { "date": "2023-12", "value_eur_m": 80 },
+        { "date": "2024-12", "value_eur_m": 200 },
+        { "date": "2025-12", "value_eur_m": 350 }
+      ],
       "product": {
         "key_products": ["Altra (ISR platform)", "Cirra (electronic warfare)", "HX-2 strike drone", "Centaur (autonomous fighter pilot)"],
         "target_market": "Western European armed forces, NATO members"

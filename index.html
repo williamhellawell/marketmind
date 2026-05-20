@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>MarketMind, European AI competitor map</title>
-<meta name="description" content="MarketMind tracks five European AI startups: Lovable, ElevenLabs, Mistral, Lexroom, Helsing. Filter by sector, country, funding and team size, then compare them side by side." />
+<meta name="description" content="MarketMind tracks five European AI startups: Lovable, ElevenLabs, Mistral, Lexroom, Helsing." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
@@ -23,16 +23,13 @@
     <div class="brand-tagline">Know your competition, own your market.</div>
   </div>
   <nav class="nav">
-    <a href="index.html" class="active">Map</a>
-    <a href="compare.html">Compare</a>
+    <a href="index.html" class="nav-btn active">Map</a>
+    <a href="compare.html" class="nav-btn">Compare</a>
   </nav>
 </header>
 
 <main class="container">
-  <h1 class="page-title">European AI startup tracker</h1>
-  <p class="page-sub">Click any pill on the map to open the company profile. Use filters to narrow the field.</p>
-
-  <section class="stat-strip" id="stat-strip"></section>
+  <section class="company-quickbar" id="company-quickbar"></section>
 
   <section class="filter-bar">
     <div class="filter-group">
@@ -60,22 +57,17 @@
   <div id="map"></div>
   <div class="map-empty" id="map-empty" hidden>No companies match the current filters.</div>
 
-  <section class="snapshot-section">
-    <div class="snapshot-header">
-      <h2>Funding &amp; Revenue Snapshot</h2>
-      <p>Total capital raised vs. estimated ARR across all five companies.</p>
+  <section class="timeline-section">
+    <div class="timeline-header">
+      <h2>Growth Timeline</h2>
+      <div class="timeline-legend" id="timeline-legend"></div>
+      <div class="timeline-toggle">
+        <button class="tgl-btn active" data-metric="funding">Cumulative Funding</button>
+        <button class="tgl-btn" data-metric="arr">Estimated ARR</button>
+      </div>
     </div>
-    <div class="snapshot-grid">
-      <div class="snapshot-card">
-        <h3>Total capital raised (€M)</h3>
-        <div class="snapshot-canvas-wrap"><canvas id="chart-raised"></canvas></div>
-        <div class="snapshot-legend" id="legend-raised"></div>
-      </div>
-      <div class="snapshot-card">
-        <h3>Estimated ARR (€M)</h3>
-        <div class="snapshot-canvas-wrap"><canvas id="chart-arr"></canvas></div>
-        <div class="snapshot-legend" id="legend-arr"></div>
-      </div>
+    <div class="timeline-card">
+      <div class="timeline-canvas-wrap"><canvas id="chart-timeline"></canvas></div>
     </div>
   </section>
 </main>
@@ -85,9 +77,7 @@
 
 <footer class="site-footer">
   <div id="footer-updated"></div>
-  <div>
-    <a href="https://github.com/williamhellawell/marketmind" target="_blank" rel="noopener">View on GitHub</a>
-  </div>
+  <div><a href="https://github.com/williamhellawell/marketmind" target="_blank" rel="noopener">View on GitHub</a></div>
 </footer>
 
 <div class="toast" id="toast"></div>

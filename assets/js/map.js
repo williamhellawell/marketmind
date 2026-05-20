@@ -1,10 +1,10 @@
 /* MarketMind map page logic. */
 (function () {
   const FILTER_KEY = 'mm.filters';
-  let map, markers = [], activePillEl = null, slideChart = null;
+  let map, markers = [], activePillEl = null, slideChart = null, timelineChart = null;
 
   const els = {
-    statStrip: document.getElementById('stat-strip'),
+    quickbar: document.getElementById('company-quickbar'),
     sectors: document.getElementById('filter-sectors'),
     countries: document.getElementById('filter-countries'),
     fundingMin: document.getElementById('funding-min'),
@@ -15,6 +15,7 @@
     slideover: document.getElementById('slideover'),
     backdrop: document.getElementById('slideover-backdrop'),
     footerUpdated: document.getElementById('footer-updated'),
+    timelineLegend: document.getElementById('timeline-legend'),
   };
 
   const BRAND_COLORS = {
@@ -25,61 +26,109 @@
     helsing:    '#4B5563',
   };
 
+  /* ---- TIMELINE MONTHS ---- */
+  /* monthly ticks from 2021-01 to 2026-05 */
+  const MONTHS = (function () {
+    var out = [], y = 2021, m = 1;
+    while (y < 2026 || (y === 2026 && m <= 5)) {
+      out.push(y + '-' + (m < 10 ? '0' + m : '' + m));
+      m++;
+      if (m > 12) { m = 1; y++; }
+    }
+    return out;
+  })();
+
+  function monthIndex(dateStr) {
+    return MONTHS.indexOf(dateStr.slice(0, 7));
+  }
+
+  function buildCumulativeSeries(rounds) {
+    var running = 0;
+    var events = rounds.map(function (r) {
+      return { idx: monthIndex(r.date), amount: r.amount_eur_m };
+    }).sort(function (a, b) { return a.idx - b.idx; });
+
+    return MONTHS.map(function (_, i) {
+      events.forEach(function (e) { if (e.idx === i) running += e.amount; });
+      return running > 0 ? running : null;
+    });
+  }
+
+  function buildArrSeries(history) {
+    var sorted = history.map(function (h) {
+      return { idx: monthIndex(h.date), val: h.value_eur_m };
+    }).sort(function (a, b) { return a.idx - b.idx; });
+
+    var data = MONTHS.map(function () { return null; });
+    sorted.forEach(function (p) { if (p.idx >= 0) data[p.idx] = p.val; });
+    return data;
+  }
+
+  /* ---- INIT ---- */
   function init() {
     MM.load().then(function () {
-      renderStats();
+      renderQuickbar();
       renderFilters();
       initMap();
       applyAndRender();
-      renderSnapshotCharts();
+      renderTimeline('funding');
       els.footerUpdated.textContent = 'Data last refreshed ' + MM.latestUpdated();
     }).catch(function (err) {
-      els.map.innerHTML = '<div class="map-empty">Failed to load data: ' + err.message + '</div>';
+      els.map.innerHTML = '<div style="padding:40px;text-align:center;color:#9CA3AF">Failed to load data: ' + err.message + '</div>';
     });
 
     els.backdrop.addEventListener('click', closeSlideover);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeSlideover();
     });
+
+    /* timeline toggle */
+    document.querySelector('.timeline-toggle').addEventListener('click', function (e) {
+      var btn = e.target.closest('.tgl-btn');
+      if (!btn) return;
+      document.querySelectorAll('.tgl-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderTimeline(btn.getAttribute('data-metric'));
+    });
   }
 
+  /* ---- QUICKBAR ---- */
+  function renderQuickbar() {
+    if (!els.quickbar) return;
+    els.quickbar.innerHTML = MM.getAll().map(function (s) {
+      return '<button class="company-qpill" data-id="' + s.id + '">' +
+        '<img class="company-qpill-logo" src="' + escapeAttr(s.logo) + '" alt="" />' +
+        escapeHtml(s.name) +
+        '</button>';
+    }).join('');
+
+    els.quickbar.addEventListener('click', function (e) {
+      var btn = e.target.closest('.company-qpill');
+      if (!btn) return;
+      openSlideover(btn.getAttribute('data-id'), null);
+    });
+  }
+
+  /* ---- FILTERS ---- */
   function getFilters() {
-    const saved = MM.readSession(FILTER_KEY, null);
+    var saved = MM.readSession(FILTER_KEY, null);
     if (saved) return saved;
     return { sectors: [], countries: [], fundingMin: null, fundingMax: null };
   }
 
   function saveFilters(f) { MM.writeSession(FILTER_KEY, f); }
 
-  function renderStats() {
-    const all = MM.getAll();
-    const totalFunding = all.reduce(function (s, x) { return s + x.funding.total_eur_m; }, 0);
-    const countries = new Set(all.map(function (x) { return x.hq.country; }));
-    const avgFounded = Math.round(all.reduce(function (s, x) { return s + x.founded; }, 0) / all.length);
-
-    els.statStrip.innerHTML = [
-      statCard('Companies tracked', all.length),
-      statCard('Total funding', MM.formatEur(totalFunding)),
-      statCard('Countries', countries.size),
-      statCard('Avg founded', avgFounded),
-    ].join('');
-  }
-
-  function statCard(label, value) {
-    return '<div class="stat-card"><div class="label">' + label + '</div><div class="value">' + value + '</div></div>';
-  }
-
   function renderFilters() {
-    const filters = getFilters();
+    var filters = getFilters();
 
     els.sectors.innerHTML = MM.uniqueSectors().map(function (s) {
-      const active = filters.sectors.indexOf(s) !== -1;
+      var active = filters.sectors.indexOf(s) !== -1;
       return '<button class="chip ' + (active ? 'active' : '') + '" data-sector="' + escapeAttr(s) + '">' +
         '<span class="chip-dot"></span>' + escapeHtml(s) + '</button>';
     }).join('');
 
     els.countries.innerHTML = MM.uniqueCountries().map(function (c) {
-      const active = filters.countries.indexOf(c) !== -1;
+      var active = filters.countries.indexOf(c) !== -1;
       return '<button class="chip ' + (active ? 'active' : '') + '" data-country="' + escapeAttr(c) + '">' +
         escapeHtml(c) + '</button>';
     }).join('');
@@ -88,9 +137,9 @@
     if (filters.fundingMax != null) els.fundingMax.value = filters.fundingMax;
 
     els.sectors.addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-sector]');
+      var btn = e.target.closest('[data-sector]');
       if (!btn) return;
-      const val = btn.getAttribute('data-sector');
+      var val = btn.getAttribute('data-sector');
       toggleListItem(filters.sectors, val);
       saveFilters(filters);
       btn.classList.toggle('active');
@@ -98,17 +147,17 @@
     });
 
     els.countries.addEventListener('click', function (e) {
-      const btn = e.target.closest('[data-country]');
+      var btn = e.target.closest('[data-country]');
       if (!btn) return;
-      const val = btn.getAttribute('data-country');
+      var val = btn.getAttribute('data-country');
       toggleListItem(filters.countries, val);
       saveFilters(filters);
       btn.classList.toggle('active');
       applyAndRender();
     });
 
-    const onRange = function () {
-      const f = getFilters();
+    var onRange = function () {
+      var f = getFilters();
       f.fundingMin = els.fundingMin.value === '' ? null : parseFloat(els.fundingMin.value);
       f.fundingMax = els.fundingMax.value === '' ? null : parseFloat(els.fundingMax.value);
       saveFilters(f);
@@ -129,10 +178,11 @@
   }
 
   function toggleListItem(arr, val) {
-    const i = arr.indexOf(val);
+    var i = arr.indexOf(val);
     if (i === -1) arr.push(val); else arr.splice(i, 1);
   }
 
+  /* ---- MAP ---- */
   function initMap() {
     map = L.map('map', {
       center: [50.5, 10],
@@ -150,8 +200,8 @@
   }
 
   function applyAndRender() {
-    const filters = getFilters();
-    const list = MM.applyFilters(filters);
+    var filters = getFilters();
+    var list = MM.applyFilters(filters);
 
     markers.forEach(function (m) { map.removeLayer(m); });
     markers = [];
@@ -165,7 +215,7 @@
     els.map.style.display = '';
 
     list.forEach(function (s) {
-      const icon = L.divIcon({
+      var icon = L.divIcon({
         className: 'mm-pill-wrap',
         html: '<button class="mm-pill" data-id="' + s.id + '" type="button">' +
               '<img class="mm-pill-logo" src="' + escapeAttr(s.logo) + '" alt="" />' +
@@ -173,26 +223,26 @@
         iconSize: null,
         iconAnchor: [0, 0],
       });
-      const m = L.marker([s.hq.lat, s.hq.lng], { icon: icon, riseOnHover: true }).addTo(map);
+      var m = L.marker([s.hq.lat, s.hq.lng], { icon: icon, riseOnHover: true }).addTo(map);
       markers.push(m);
     });
 
     setTimeout(function () { map.invalidateSize(); }, 50);
-    const bounds = L.latLngBounds(list.map(function (s) { return [s.hq.lat, s.hq.lng]; }));
+    var bounds = L.latLngBounds(list.map(function (s) { return [s.hq.lat, s.hq.lng]; }));
     if (list.length > 1) map.fitBounds(bounds.pad(0.5), { maxZoom: 5.5, animate: true });
   }
 
   function mapPillClickDelegate(e) {
-    const pill = e.target.closest('.mm-pill');
+    var pill = e.target.closest('.mm-pill');
     if (!pill) return;
     e.stopPropagation();
     e.preventDefault();
-    const id = pill.getAttribute('data-id');
-    openSlideover(id, pill);
+    openSlideover(pill.getAttribute('data-id'), pill);
   }
 
+  /* ---- SLIDE-OVER ---- */
   function openSlideover(id, pillEl) {
-    const s = MM.getById(id);
+    var s = MM.getById(id);
     if (!s) return;
 
     if (activePillEl) activePillEl.classList.remove('is-active');
@@ -204,9 +254,9 @@
     els.slideover.setAttribute('aria-hidden', 'false');
     els.backdrop.classList.add('open');
 
-    const closeBtn = els.slideover.querySelector('.slideover-close');
+    var closeBtn = els.slideover.querySelector('.slideover-close');
     if (closeBtn) closeBtn.addEventListener('click', closeSlideover);
-    const compareLink = els.slideover.querySelector('[data-action="compare"]');
+    var compareLink = els.slideover.querySelector('[data-action="compare"]');
     if (compareLink) compareLink.addEventListener('click', function (e) {
       e.preventDefault();
       window.location.href = 'compare.html?selected=' + s.id;
@@ -216,26 +266,26 @@
   }
 
   function renderSlideChart(s) {
-    const canvas = document.getElementById('slide-chart');
+    var canvas = document.getElementById('slide-chart');
     if (!canvas || typeof Chart === 'undefined') return;
 
-    const all = MM.getAll();
-    const max = {
-      funding: Math.max.apply(null, all.map(function (x) { return x.funding.total_eur_m; })),
+    var all = MM.getAll();
+    var max = {
+      funding:   Math.max.apply(null, all.map(function (x) { return x.funding.total_eur_m; })),
       valuation: Math.max.apply(null, all.map(function (x) { return x.funding.valuation_eur_b; })),
       headcount: Math.max.apply(null, all.map(function (x) { return x.headcount; })),
-      press: Math.max.apply(null, all.map(function (x) { return x.traction.press_mentions_90d; })),
-      arr: Math.max.apply(null, all.map(function (x) { return x.traction.arr_eur_m; })),
+      press:     Math.max.apply(null, all.map(function (x) { return x.traction.press_mentions_90d; })),
+      arr:       Math.max.apply(null, all.map(function (x) { return x.traction.arr_eur_m; })),
     };
-    const labels = ['Funding', 'Valuation', 'Headcount', 'Press 90d', 'ARR'];
-    const values = [
+    var labels = ['Funding', 'Valuation', 'Headcount', 'Press 90d', 'ARR'];
+    var values = [
       norm(s.funding.total_eur_m, max.funding),
       norm(s.funding.valuation_eur_b, max.valuation),
       norm(s.headcount, max.headcount),
       norm(s.traction.press_mentions_90d, max.press),
       norm(s.traction.arr_eur_m, max.arr),
     ];
-    const rawVals = [
+    var rawVals = [
       MM.formatEur(s.funding.total_eur_m),
       MM.formatEurB(s.funding.valuation_eur_b),
       MM.formatNumber(s.headcount) + ' people',
@@ -263,9 +313,7 @@
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: function (ctx) {
-                return rawVals[ctx.dataIndex] + ' (' + Math.round(ctx.parsed.x * 100) + '% of peer max)';
-              },
+              label: function (ctx) { return rawVals[ctx.dataIndex] + ' (' + Math.round(ctx.parsed.x * 100) + '% of peer max)'; },
               title: function () { return ''; },
             },
           },
@@ -300,7 +348,7 @@
   }
 
   function slideoverHtml(s) {
-    const last = s.funding.last_round;
+    var last = s.funding.last_round;
     return (
       '<div class="slideover-header">' +
         '<img class="slideover-logo" src="' + escapeAttr(s.logo) + '" alt="' + escapeAttr(s.name + ' logo') + '" />' +
@@ -324,7 +372,7 @@
         ) +
         section('Where it stands vs peers',
           '<div class="slideover-chart-wrap"><canvas id="slide-chart"></canvas></div>' +
-          '<div class="slideover-chart-caption">Each bar shows ' + escapeHtml(s.name) + '&rsquo;s value as a percentage of the highest among the five tracked companies. 100% means leading the pack.</div>'
+          '<div class="slideover-chart-caption">Each bar shows ' + escapeHtml(s.name) + '’s value as a percentage of the highest among the five tracked companies.</div>'
         ) +
         section('Funding',
           '<dl class="slideover-kv">' +
@@ -385,11 +433,124 @@
 
   function shortenUrl(u) {
     try {
-      const x = new URL(u);
+      var x = new URL(u);
       return x.hostname.replace(/^www\./, '') + (x.pathname.length > 1 ? x.pathname.slice(0, 30) + (x.pathname.length > 30 ? '...' : '') : '');
     } catch (e) { return u; }
   }
 
+  /* ---- TIMELINE CHART ---- */
+  function renderTimeline(metric) {
+    var all = MM.getAll();
+    var canvas = document.getElementById('chart-timeline');
+    if (!canvas) return;
+
+    var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+    var datasets = all.map(function (s) {
+      var color = BRAND_COLORS[s.id] || '#1D4ED8';
+      var data = metric === 'funding'
+        ? buildCumulativeSeries(s.funding_rounds || [])
+        : buildArrSeries(s.arr_history || []);
+
+      return {
+        label: s.name,
+        data: data,
+        borderColor: color,
+        backgroundColor: hexToRgba(color, 0.07),
+        borderWidth: 2.5,
+        pointRadius: function (ctx) {
+          return ctx.raw !== null ? 3 : 0;
+        },
+        pointHoverRadius: 6,
+        pointBackgroundColor: color,
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        fill: metric === 'funding',
+        stepped: metric === 'funding' ? 'after' : false,
+        tension: metric === 'arr' ? 0.35 : 0,
+        spanGaps: metric === 'arr',
+      };
+    });
+
+    /* legend */
+    if (els.timelineLegend) {
+      els.timelineLegend.innerHTML = all.map(function (s) {
+        var color = BRAND_COLORS[s.id] || '#1D4ED8';
+        return '<div class="tl-legend-item">' +
+          '<span class="tl-legend-line" style="background:' + color + '"></span>' +
+          escapeHtml(s.name) + '</div>';
+      }).join('');
+    }
+
+    if (timelineChart) timelineChart.destroy();
+    timelineChart = new Chart(canvas, {
+      type: 'line',
+      data: { labels: MONTHS, datasets: datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#0F172A',
+            padding: 12,
+            cornerRadius: 10,
+            titleFont: { family: 'Inter', size: 12, weight: '600' },
+            bodyFont: { family: 'Inter', size: 12 },
+            filter: function (item) { return item.parsed.y !== null; },
+            callbacks: {
+              title: function (items) {
+                var lbl = items[0].label;
+                var parts = lbl.split('-');
+                return MONTH_NAMES[parseInt(parts[1], 10) - 1] + ' ' + parts[0];
+              },
+              label: function (ctx) {
+                if (ctx.parsed.y === null) return null;
+                return ctx.dataset.label + ': ' + MM.formatEur(ctx.parsed.y);
+              },
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: { color: '#F3F4F6' },
+            border: { dash: [3, 3] },
+            ticks: {
+              font: { family: 'Inter', size: 11 },
+              color: '#9CA3AF',
+              maxRotation: 0,
+              autoSkip: false,
+              callback: function (val, idx) {
+                var lbl = MONTHS[idx];
+                if (!lbl) return '';
+                /* show year label only on Jan */
+                return lbl.slice(5) === '01' ? lbl.slice(0, 4) : '';
+              },
+            },
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: '#F3F4F6' },
+            border: { dash: [3, 3] },
+            ticks: {
+              font: { family: 'Inter', size: 11 },
+              color: '#9CA3AF',
+              callback: function (v) { return MM.formatEur(v); },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  function hexToRgba(hex, a) {
+    var m = hex.replace('#', '');
+    var r = parseInt(m.slice(0, 2), 16), g = parseInt(m.slice(2, 4), 16), b = parseInt(m.slice(4, 6), 16);
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+  }
+
+  /* ---- UTILS ---- */
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
@@ -397,88 +558,6 @@
   }
 
   function escapeAttr(s) { return escapeHtml(s); }
-
-  function renderSnapshotCharts() {
-    const all = MM.getAll();
-    const labels = all.map(function (s) { return s.name; });
-    const colors = all.map(function (s) { return BRAND_COLORS[s.id] || '#1D4ED8'; });
-    const raisedData = all.map(function (s) { return s.funding.total_eur_m; });
-    const arrData = all.map(function (s) { return s.traction.arr_eur_m; });
-
-    function barConfig(data, unit) {
-      return {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: colors,
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 32,
-          }],
-        },
-        options: {
-          indexAxis: 'y',
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function (ctx) { return MM.formatEur(ctx.parsed.x); },
-                title: function (ctx) { return ctx[0].label; },
-              },
-              backgroundColor: '#0F172A',
-              padding: 10,
-              cornerRadius: 8,
-              titleFont: { family: 'Inter', size: 12, weight: '600' },
-              bodyFont: { family: 'Inter', size: 12 },
-            },
-          },
-          scales: {
-            x: {
-              beginAtZero: true,
-              grid: { color: '#F3F4F6' },
-              border: { dash: [3, 3] },
-              ticks: {
-                font: { family: 'Inter', size: 10 },
-                color: '#9CA3AF',
-                callback: function (v) { return MM.formatEur(v); },
-              },
-            },
-            y: {
-              grid: { display: false },
-              ticks: {
-                font: { family: 'Inter', size: 12, weight: '600' },
-                color: '#0F172A',
-                callback: function (val, idx) {
-                  var s = all[idx];
-                  return s ? s.name : val;
-                },
-              },
-            },
-          },
-        },
-      };
-    }
-
-    new Chart(document.getElementById('chart-raised'), barConfig(raisedData, '€M'));
-    new Chart(document.getElementById('chart-arr'), barConfig(arrData, '€M'));
-
-    function renderLegend(id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.innerHTML = all.map(function (s) {
-        return '<div class="legend-item">' +
-          '<span class="legend-dot" style="background:' + (BRAND_COLORS[s.id] || '#1D4ED8') + '"></span>' +
-          escapeHtml(s.name) +
-          '</div>';
-      }).join('');
-    }
-    renderLegend('legend-raised');
-    renderLegend('legend-arr');
-  }
 
   document.addEventListener('DOMContentLoaded', init);
 })();
