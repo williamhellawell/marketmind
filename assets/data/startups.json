@@ -1,0 +1,197 @@
+{
+  "meta": {
+    "currency": "EUR",
+    "fx_note": "USD figures converted at 1 USD = 0.93 EUR (May 2026 reference rate).",
+    "generated": "2026-05-20"
+  },
+  "startups": [
+    {
+      "id": "lovable",
+      "name": "Lovable",
+      "tagline": "Vibe-coding platform that turns prompts into shippable apps.",
+      "color": "#1D4ED8",
+      "hq": { "city": "Stockholm", "country": "Sweden", "lat": 59.3293, "lng": 18.0686 },
+      "founded": 2023,
+      "sector": "AI app builder",
+      "founders": ["Anton Osika", "Fabian Hedin"],
+      "headcount": 120,
+      "open_roles": 38,
+      "funding": {
+        "total_eur_m": 510,
+        "last_round": {
+          "stage": "Series B",
+          "amount_eur_m": 307,
+          "date": "2025-12",
+          "lead": "CapitalG, Menlo Ventures"
+        },
+        "valuation_eur_b": 6.14,
+        "notable_investors": ["CapitalG", "Menlo Ventures", "Accel", "NVentures", "Salesforce Ventures", "Databricks Ventures"]
+      },
+      "product": {
+        "key_products": ["Lovable app builder", "Lovable Cloud"],
+        "target_market": "Indie builders, startups, SMB product teams"
+      },
+      "traction": {
+        "notable_customers": ["25M+ projects created in first year"],
+        "arr_eur_m": 186,
+        "press_mentions_90d": 412
+      },
+      "last_updated": "2026-05-20",
+      "sources": [
+        "https://techcrunch.com/2025/12/18/vibe-coding-startup-lovable-raises-330m-at-a-6-6b-valuation/",
+        "https://fortune.com/2025/12/18/lovable-ai-vibe-coding-last-piece-of-software-ceo/"
+      ]
+    },
+    {
+      "id": "elevenlabs",
+      "name": "ElevenLabs",
+      "tagline": "Voice AI for text-to-speech, dubbing, and conversational agents.",
+      "color": "#1D4ED8",
+      "hq": { "city": "London", "country": "United Kingdom", "lat": 51.5074, "lng": -0.1278 },
+      "founded": 2022,
+      "sector": "Voice AI",
+      "founders": ["Piotr Dabkowski", "Mati Staniszewski"],
+      "headcount": 580,
+      "open_roles": 92,
+      "funding": {
+        "total_eur_m": 715,
+        "last_round": {
+          "stage": "Series D",
+          "amount_eur_m": 465,
+          "date": "2026-02",
+          "lead": "Sequoia Capital"
+        },
+        "valuation_eur_b": 10.23,
+        "notable_investors": ["Sequoia Capital", "Andreessen Horowitz", "ICONIQ Growth", "Lightspeed Venture Partners", "NEA", "Bond"]
+      },
+      "product": {
+        "key_products": ["TTS", "Conversational Agents", "Dubbing Studio", "Sound Effects", "Music"],
+        "target_market": "Media, enterprise, developers, gaming"
+      },
+      "traction": {
+        "notable_customers": ["The Washington Post", "Storytel", "Deutsche Telekom"],
+        "arr_eur_m": 465,
+        "press_mentions_90d": 624
+      },
+      "last_updated": "2026-05-20",
+      "sources": [
+        "https://www.cnbc.com/2026/02/04/nvidia-backed-ai-startup-elevenlabs-11-billion-valuation.html",
+        "https://elevenlabs.io/blog/series-c",
+        "https://en.wikipedia.org/wiki/ElevenLabs"
+      ]
+    },
+    {
+      "id": "mistral",
+      "name": "Mistral AI",
+      "tagline": "Open-weight frontier models built in Europe.",
+      "color": "#1D4ED8",
+      "hq": { "city": "Paris", "country": "France", "lat": 48.8566, "lng": 2.3522 },
+      "founded": 2023,
+      "sector": "Foundation models",
+      "founders": ["Arthur Mensch", "Guillaume Lample", "Timothée Lacroix"],
+      "headcount": 1093,
+      "open_roles": 145,
+      "funding": {
+        "total_eur_m": 2837,
+        "last_round": {
+          "stage": "Debt financing",
+          "amount_eur_m": 772,
+          "date": "2026-03",
+          "lead": "Undisclosed lenders"
+        },
+        "valuation_eur_b": 12.74,
+        "notable_investors": ["General Catalyst", "Lightspeed", "Andreessen Horowitz", "Nvidia", "Eurazeo", "Bertelsmann"]
+      },
+      "product": {
+        "key_products": ["Le Chat", "Mistral Large 2", "Codestral", "Mistral Embed", "La Plateforme"],
+        "target_market": "Developers, enterprise, government"
+      },
+      "traction": {
+        "notable_customers": ["BNP Paribas", "Cisco", "Stellantis", "French Government"],
+        "arr_eur_m": 220,
+        "press_mentions_90d": 871
+      },
+      "last_updated": "2026-05-20",
+      "sources": [
+        "https://www.cnbc.com/2026/03/30/mistral-ai-paris-data-center-cluster-debt-financing.html",
+        "https://en.wikipedia.org/wiki/Mistral_AI",
+        "https://pitchbook.com/profiles/company/527294-17"
+      ]
+    },
+    {
+      "id": "lexroom",
+      "name": "Lexroom",
+      "tagline": "Legal AI built for civil-law jurisdictions across Europe.",
+      "color": "#1D4ED8",
+      "hq": { "city": "Milan", "country": "Italy", "lat": 45.4642, "lng": 9.19 },
+      "founded": 2023,
+      "sector": "Legaltech",
+      "founders": ["Paolo Fois", "Martina Domenicali", "Andrea Lonza"],
+      "headcount": 70,
+      "open_roles": 24,
+      "funding": {
+        "total_eur_m": 62.7,
+        "last_round": {
+          "stage": "Series B",
+          "amount_eur_m": 42.9,
+          "date": "2026-05",
+          "lead": "Left Lane Capital"
+        },
+        "valuation_eur_b": 0.32,
+        "notable_investors": ["Left Lane Capital", "Base10 Partners", "Eurazeo", "Acurio Ventures", "Entourage"]
+      },
+      "product": {
+        "key_products": ["Lexroom Research", "Lexroom Drafting", "Lexroom Review"],
+        "target_market": "Law firms and in-house legal teams in civil-law Europe"
+      },
+      "traction": {
+        "notable_customers": ["8,000+ law firms and corporate legal teams"],
+        "arr_eur_m": 14,
+        "press_mentions_90d": 96
+      },
+      "last_updated": "2026-05-20",
+      "sources": [
+        "https://www.eu-startups.com/2026/05/italian-ai-legaltech-startup-lexroom-raises-e42-9-million-series-b-eight-months-after-e16-2-million-series-a/",
+        "https://tech.eu/2026/05/19/lexroom-to-build-legal-ai-for-civil-law-europe-with-50m-series-b/"
+      ]
+    },
+    {
+      "id": "helsing",
+      "name": "Helsing",
+      "tagline": "AI software for defence: ISR, autonomy, and battlefield systems.",
+      "color": "#1D4ED8",
+      "hq": { "city": "Munich", "country": "Germany", "lat": 48.1351, "lng": 11.582 },
+      "founded": 2021,
+      "sector": "Defence AI",
+      "founders": ["Gundbert Scherf", "Torsten Reil", "Niklas Köhler"],
+      "headcount": 600,
+      "open_roles": 110,
+      "funding": {
+        "total_eur_m": 1830,
+        "last_round": {
+          "stage": "Series E",
+          "amount_eur_m": 1116,
+          "date": "2026-05",
+          "lead": "Dragoneer Investment Group"
+        },
+        "valuation_eur_b": 16.74,
+        "notable_investors": ["Dragoneer", "Lightspeed Venture Partners", "Prima Materia", "Accel", "General Catalyst", "SAAB"]
+      },
+      "product": {
+        "key_products": ["Altra (ISR platform)", "Cirra (electronic warfare)", "HX-2 strike drone", "Centaur (autonomous fighter pilot)"],
+        "target_market": "Western European armed forces, NATO members"
+      },
+      "traction": {
+        "notable_customers": ["German Bundeswehr", "Ukrainian Armed Forces", "UK MoD", "SAAB"],
+        "arr_eur_m": 350,
+        "press_mentions_90d": 538
+      },
+      "last_updated": "2026-05-20",
+      "sources": [
+        "https://techcrunch.com/2026/05/11/daniel-ek-backed-defense-tech-helsing-to-raise-1-2b-at-18b-valuation/",
+        "https://helsing.ai/newsroom/helsing-raises-eur600m-to-invest-in-european-technological-sovereignty",
+        "https://siliconcanals.com/helsing-secures-e600m-in-series-d/"
+      ]
+    }
+  ]
+}

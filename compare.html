@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compare, MarketMind</title>
+<meta name="description" content="Side-by-side comparison of European AI startups across funding, team, product and traction metrics." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path d="M3 17V5l8 6 8-6v12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      MarketMind
+    </div>
+    <div class="brand-tagline">Know your competition, own your market.</div>
+  </div>
+  <nav class="nav">
+    <a href="index.html">Map</a>
+    <a href="compare.html" class="active">Compare</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h1 class="page-title">Compare</h1>
+  <p class="page-sub">Toggle companies and metric groups, then read the side-by-side table or jump to the charts.</p>
+
+  <section class="section-card">
+    <div class="compare-controls">
+      <div class="filter-group">
+        <span class="filter-label">Companies</span>
+        <div class="chip-group" id="select-companies"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Metric groups</span>
+        <div class="chip-group" id="select-metrics"></div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">&nbsp;</span>
+        <button class="btn-secondary" id="copy-markdown">Copy table as Markdown</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="compare-table-wrap">
+    <table class="compare-table" id="compare-table">
+      <thead><tr id="compare-thead"></tr></thead>
+      <tbody id="compare-tbody"></tbody>
+    </table>
+  </div>
+
+  <section class="charts-grid">
+    <div class="chart-card">
+      <h3>Total funding (€M)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chart-funding"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Headcount</h3>
+      <div class="chart-canvas-wrap"><canvas id="chart-headcount"></canvas></div>
+    </div>
+    <div class="chart-card full">
+      <h3>Normalised KPI radar</h3>
+      <div class="chart-canvas-wrap tall"><canvas id="chart-radar"></canvas></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div id="footer-updated"></div>
+  <div>
+    <a href="https://github.com/williamhellawell/marketmind" target="_blank" rel="noopener">View on GitHub</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/compare.js"></script>
+</body>
+</html>

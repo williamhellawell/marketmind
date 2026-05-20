@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MarketMind, European AI competitor map</title>
+<meta name="description" content="MarketMind tracks five European AI startups: Lovable, ElevenLabs, Mistral, Lexroom, Helsing. Filter by sector, country, funding and team size, then compare them side by side." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+        <path d="M3 17V5l8 6 8-6v12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      MarketMind
+    </div>
+    <div class="brand-tagline">Know your competition, own your market.</div>
+  </div>
+  <nav class="nav">
+    <a href="index.html" class="active">Map</a>
+    <a href="compare.html">Compare</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h1 class="page-title">European AI startup tracker</h1>
+  <p class="page-sub">Click any pill on the map to open the company profile. Use filters to narrow the field.</p>
+
+  <section class="stat-strip" id="stat-strip"></section>
+
+  <section class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Sector</span>
+      <div class="chip-group" id="filter-sectors"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Country</span>
+      <div class="chip-group" id="filter-countries"></div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Total funding (€M)</span>
+      <div class="range-row">
+        <input type="number" id="funding-min" min="0" step="10" placeholder="Min" />
+        <span>to</span>
+        <input type="number" id="funding-max" min="0" step="10" placeholder="Max" />
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">&nbsp;</span>
+      <button class="btn-reset" id="filter-reset">Reset filters</button>
+    </div>
+  </section>
+
+  <div id="map"></div>
+  <div class="map-empty" id="map-empty" hidden>No companies match the current filters.</div>
+</main>
+
+<div class="slideover-backdrop" id="slideover-backdrop"></div>
+<aside class="slideover" id="slideover" aria-hidden="true"></aside>
+
+<footer class="site-footer">
+  <div id="footer-updated"></div>
+  <div>
+    <a href="https://github.com/williamhellawell/marketmind" target="_blank" rel="noopener">View on GitHub</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/map.js"></script>
+</body>
+</html>
