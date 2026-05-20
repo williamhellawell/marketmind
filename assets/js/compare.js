@@ -59,7 +59,7 @@
     els.selectCompanies.innerHTML = MM.getAll().map(function (s) {
       const active = selected.indexOf(s.id) !== -1;
       return '<button class="chip ' + (active ? 'active' : '') + '" data-id="' + s.id + '">' +
-        '<span class="chip-dot"></span>' + escapeHtml(s.name) + '</button>';
+        '<img class="chip-logo" src="' + escapeAttr(s.logo) + '" alt="" />' + escapeHtml(s.name) + '</button>';
     }).join('');
 
     els.selectMetrics.innerHTML = METRIC_GROUPS.map(function (g) {
@@ -144,7 +144,7 @@
     const built = buildRows(selected, metrics);
 
     els.thead.innerHTML = '<th>Metric</th>' + built.startups.map(function (s) {
-      return '<th>' + escapeHtml(s.name) + '</th>';
+      return '<th><img class="th-logo" src="' + escapeAttr(s.logo) + '" alt="" />' + escapeHtml(s.name) + '</th>';
     }).join('');
 
     els.tbody.innerHTML = built.rows.map(function (r) {
@@ -327,6 +327,7 @@
       return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
     });
   }
+  function escapeAttr(s) { return escapeHtml(s); }
 
   document.addEventListener('DOMContentLoaded', init);
 })();

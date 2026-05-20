@@ -159,7 +159,8 @@
       const icon = L.divIcon({
         className: 'mm-pill-wrap',
         html: '<button class="mm-pill" data-id="' + s.id + '" type="button">' +
-              '<span class="mm-pill-dot"></span>' + escapeHtml(s.name) + '</button>',
+              '<img class="mm-pill-logo" src="' + escapeAttr(s.logo) + '" alt="" />' +
+              escapeHtml(s.name) + '</button>',
         iconSize: null,
         iconAnchor: [0, 0],
       });
@@ -293,7 +294,8 @@
     const last = s.funding.last_round;
     return (
       '<div class="slideover-header">' +
-        '<div>' +
+        '<img class="slideover-logo" src="' + escapeAttr(s.logo) + '" alt="' + escapeAttr(s.name + ' logo') + '" />' +
+        '<div style="min-width:0;flex:1">' +
           '<h2 class="slideover-title">' + escapeHtml(s.name) + '</h2>' +
           '<div class="slideover-sub">' + escapeHtml(s.tagline) + '</div>' +
         '</div>' +
