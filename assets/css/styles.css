@@ -278,6 +278,9 @@ button {
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
 }
 
 .map-empty {
@@ -345,7 +348,7 @@ button {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s;
-  z-index: 100;
+  z-index: 1050;
 }
 
 .slideover-backdrop.open {
@@ -363,7 +366,7 @@ button {
   box-shadow: var(--shadow-lg);
   transform: translateX(100%);
   transition: transform 0.25s ease-out;
-  z-index: 101;
+  z-index: 1100;
   display: flex;
   flex-direction: column;
 }
@@ -459,6 +462,19 @@ button {
   border-top: 1px solid var(--border);
   display: flex;
   gap: 8px;
+}
+
+.slideover-chart-wrap {
+  position: relative;
+  height: 180px;
+  margin-top: 4px;
+}
+
+.slideover-chart-caption {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
 }
 
 .btn-primary {

@@ -1,7 +1,7 @@
 /* MarketMind map page logic. */
 (function () {
   const FILTER_KEY = 'mm.filters';
-  let map, markers = [], activePillEl = null;
+  let map, markers = [], activePillEl = null, slideChart = null;
 
   const els = {
     statStrip: document.getElementById('stat-strip'),
@@ -201,13 +201,92 @@
       e.preventDefault();
       window.location.href = 'compare.html?selected=' + s.id;
     });
+
+    renderSlideChart(s);
   }
+
+  function renderSlideChart(s) {
+    const canvas = document.getElementById('slide-chart');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    const all = MM.getAll();
+    const max = {
+      funding: Math.max.apply(null, all.map(function (x) { return x.funding.total_eur_m; })),
+      valuation: Math.max.apply(null, all.map(function (x) { return x.funding.valuation_eur_b; })),
+      headcount: Math.max.apply(null, all.map(function (x) { return x.headcount; })),
+      press: Math.max.apply(null, all.map(function (x) { return x.traction.press_mentions_90d; })),
+      arr: Math.max.apply(null, all.map(function (x) { return x.traction.arr_eur_m; })),
+    };
+    const labels = ['Funding', 'Valuation', 'Headcount', 'Press 90d', 'ARR'];
+    const values = [
+      norm(s.funding.total_eur_m, max.funding),
+      norm(s.funding.valuation_eur_b, max.valuation),
+      norm(s.headcount, max.headcount),
+      norm(s.traction.press_mentions_90d, max.press),
+      norm(s.traction.arr_eur_m, max.arr),
+    ];
+    const rawVals = [
+      MM.formatEur(s.funding.total_eur_m),
+      MM.formatEurB(s.funding.valuation_eur_b),
+      MM.formatNumber(s.headcount) + ' people',
+      MM.formatNumber(s.traction.press_mentions_90d) + ' mentions',
+      MM.formatEur(s.traction.arr_eur_m) + ' ARR',
+    ];
+
+    if (slideChart) slideChart.destroy();
+    slideChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: 'rgba(29, 78, 216, 0.85)',
+          borderRadius: 5,
+          borderSkipped: false,
+          maxBarThickness: 18,
+        }],
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                return rawVals[ctx.dataIndex] + ' (' + Math.round(ctx.parsed.x * 100) + '% of peer max)';
+              },
+              title: function () { return ''; },
+            },
+          },
+        },
+        scales: {
+          x: {
+            min: 0, max: 1,
+            grid: { color: '#E5E7EB' },
+            ticks: {
+              font: { family: 'Inter', size: 10 }, color: '#9CA3AF',
+              callback: function (v) { return Math.round(v * 100) + '%'; },
+              stepSize: 0.25,
+            },
+          },
+          y: {
+            grid: { display: false },
+            ticks: { font: { family: 'Inter', size: 11, weight: '500' }, color: '#0F172A' },
+          },
+        },
+      },
+    });
+  }
+
+  function norm(v, max) { return max > 0 ? v / max : 0; }
 
   function closeSlideover() {
     els.slideover.classList.remove('open');
     els.slideover.setAttribute('aria-hidden', 'true');
     els.backdrop.classList.remove('open');
     if (activePillEl) { activePillEl.classList.remove('is-active'); activePillEl = null; }
+    if (slideChart) { slideChart.destroy(); slideChart = null; }
   }
 
   function slideoverHtml(s) {
@@ -231,6 +310,10 @@
             kv('Headcount', MM.formatNumber(s.headcount)) +
             kv('Open roles', MM.formatNumber(s.open_roles)) +
           '</dl>'
+        ) +
+        section('Where it stands vs peers',
+          '<div class="slideover-chart-wrap"><canvas id="slide-chart"></canvas></div>' +
+          '<div class="slideover-chart-caption">Each bar shows ' + escapeHtml(s.name) + '&rsquo;s value as a percentage of the highest among the five tracked companies. 100% means leading the pack.</div>'
         ) +
         section('Funding',
           '<dl class="slideover-kv">' +
