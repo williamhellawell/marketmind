@@ -18,6 +18,19 @@
     timelineLegend: document.getElementById('timeline-legend'),
   };
 
+  const TICKER_ITEMS = [
+    { co: 'LOVABLE',     text: 'Raises $330M Series B at $6.6B valuation in record European AI round' },
+    { co: 'LOVABLE',     text: 'Surpasses 25 million projects created in its first year of launch' },
+    { co: 'ELEVENLABS',  text: 'Closes $500M Series D at $11B valuation backed by Nvidia and Sequoia' },
+    { co: 'ELEVENLABS',  text: 'Hits $465M ARR as enterprise demand for voice AI accelerates globally' },
+    { co: 'MISTRAL AI',  text: 'Secures €772M debt financing to expand its Paris AI data centre cluster' },
+    { co: 'MISTRAL AI',  text: 'Le Chat assistant reaches 1 million daily users across European markets' },
+    { co: 'LEXROOM',     text: 'Raises €42.9M Series B to scale legal AI across civil-law Europe' },
+    { co: 'LEXROOM',     text: 'Onboards 8,000+ law firms across Italy, France, and Spain' },
+    { co: 'HELSING',     text: 'Closes €1.1B Series E at €16.7B valuation, Europe\'s largest defence AI raise' },
+    { co: 'HELSING',     text: 'Altra ISR platform deployed operationally with Ukrainian Armed Forces' },
+  ];
+
   const BRAND_COLORS = {
     lovable:    '#FF5733',
     elevenlabs: '#18181B',
@@ -64,8 +77,43 @@
     return data;
   }
 
+  /* ---- NEWS TICKER ---- */
+  function initTicker() {
+    var track = document.getElementById('ticker-track');
+    var el    = document.getElementById('ticker-text');
+    if (!track || !el) return;
+
+    var idx = 0;
+
+    function showNext() {
+      var item = TICKER_ITEMS[idx];
+      idx = (idx + 1) % TICKER_ITEMS.length;
+
+      el.innerHTML = '<strong style="margin-right:10px;letter-spacing:0.05em">' +
+        escapeHtml(item.co) + '</strong>' + escapeHtml(item.text);
+
+      /* reset to right edge (off-screen) */
+      el.style.transition = 'none';
+      el.style.transform = 'translate(' + track.offsetWidth + 'px,-50%)';
+
+      /* force reflow so transition doesn't collapse */
+      el.getBoundingClientRect();
+
+      /* slow scroll: ~55px per second */
+      var dist = track.offsetWidth + el.offsetWidth;
+      var dur  = (dist / 55).toFixed(1);
+
+      el.style.transition = 'transform ' + dur + 's linear';
+      el.style.transform  = 'translate(-' + el.offsetWidth + 'px,-50%)';
+    }
+
+    el.addEventListener('transitionend', showNext);
+    showNext();
+  }
+
   /* ---- INIT ---- */
   function init() {
+    initTicker();
     MM.load().then(function () {
       renderQuickbar();
       renderFilters();

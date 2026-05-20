@@ -48,6 +48,48 @@ button {
   color: inherit;
 }
 
+/* ---------- News ticker ---------- */
+.news-ticker {
+  background: #FEFCE8;
+  border-bottom: 1px solid #FDE68A;
+  height: 36px;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  position: sticky;
+  top: var(--header-h);
+  z-index: 55;
+}
+
+.ticker-label {
+  flex-shrink: 0;
+  padding: 0 14px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #78350F;
+  background: #FEF08A;
+  border-right: 1px solid #FDE68A;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-track {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.ticker-text {
+  position: absolute;
+  top: 50%;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 500;
+  color: #0F172A;
+  will-change: transform;
+}
+
 /* ---------- Company quickbar ---------- */
 .company-quickbar {
   display: flex;
