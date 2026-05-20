@@ -79,36 +79,33 @@
 
   /* ---- NEWS TICKER ---- */
   function initTicker() {
-    var track = document.getElementById('ticker-track');
     var el    = document.getElementById('ticker-text');
-    if (!track || !el) return;
+    var track = document.getElementById('ticker-track');
+    if (!el || !track) return;
 
+    var SPEED    = 60;  /* px per second */
+    var FPS      = 30;
+    var INTERVAL = 1000 / FPS;
     var idx = 0;
+    var x   = 0;
+    var endX = -600;
 
-    function showNext() {
+    function loadItem() {
       var item = TICKER_ITEMS[idx];
       idx = (idx + 1) % TICKER_ITEMS.length;
-
-      el.innerHTML = '<strong style="margin-right:10px;letter-spacing:0.05em">' +
-        escapeHtml(item.co) + '</strong>' + escapeHtml(item.text);
-
-      /* reset to right edge (off-screen) */
-      el.style.transition = 'none';
-      el.style.transform = 'translate(' + track.offsetWidth + 'px,-50%)';
-
-      /* force reflow so transition doesn't collapse */
-      el.getBoundingClientRect();
-
-      /* slow scroll: ~55px per second */
-      var dist = track.offsetWidth + el.offsetWidth;
-      var dur  = (dist / 55).toFixed(1);
-
-      el.style.transition = 'transform ' + dur + 's linear';
-      el.style.transform  = 'translate(-' + el.offsetWidth + 'px,-50%)';
+      el.innerHTML = '<b style="margin-right:12px;letter-spacing:.06em;font-size:11px">' +
+        escapeHtml(item.co) + '</b>' + escapeHtml(item.text);
+      x    = (track.clientWidth || window.innerWidth) + 10;
+      endX = -(el.scrollWidth + 10);
     }
 
-    el.addEventListener('transitionend', showNext);
-    showNext();
+    loadItem();
+
+    setInterval(function () {
+      x -= SPEED / FPS;
+      el.style.left = x + 'px';
+      if (x < endX) { loadItem(); }
+    }, INTERVAL);
   }
 
   /* ---- INIT ---- */

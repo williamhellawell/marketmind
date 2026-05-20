@@ -83,11 +83,12 @@ button {
 .ticker-text {
   position: absolute;
   top: 50%;
+  transform: translateY(-50%);
+  left: 9999px; /* hidden until JS initialises */
   white-space: nowrap;
   font-size: 13px;
   font-weight: 500;
   color: #0F172A;
-  will-change: transform;
 }
 
 /* ---------- Company quickbar ---------- */
