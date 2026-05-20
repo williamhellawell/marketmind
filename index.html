@@ -59,6 +59,25 @@
 
   <div id="map"></div>
   <div class="map-empty" id="map-empty" hidden>No companies match the current filters.</div>
+
+  <section class="snapshot-section">
+    <div class="snapshot-header">
+      <h2>Funding &amp; Revenue Snapshot</h2>
+      <p>Total capital raised vs. estimated ARR across all five companies.</p>
+    </div>
+    <div class="snapshot-grid">
+      <div class="snapshot-card">
+        <h3>Total capital raised (€M)</h3>
+        <div class="snapshot-canvas-wrap"><canvas id="chart-raised"></canvas></div>
+        <div class="snapshot-legend" id="legend-raised"></div>
+      </div>
+      <div class="snapshot-card">
+        <h3>Estimated ARR (€M)</h3>
+        <div class="snapshot-canvas-wrap"><canvas id="chart-arr"></canvas></div>
+        <div class="snapshot-legend" id="legend-arr"></div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <div class="slideover-backdrop" id="slideover-backdrop"></div>

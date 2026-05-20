@@ -17,12 +17,21 @@
     footerUpdated: document.getElementById('footer-updated'),
   };
 
+  const BRAND_COLORS = {
+    lovable:    '#FF5733',
+    elevenlabs: '#18181B',
+    mistral:    '#F97316',
+    lexroom:    '#1B5FC1',
+    helsing:    '#4B5563',
+  };
+
   function init() {
     MM.load().then(function () {
       renderStats();
       renderFilters();
       initMap();
       applyAndRender();
+      renderSnapshotCharts();
       els.footerUpdated.textContent = 'Data last refreshed ' + MM.latestUpdated();
     }).catch(function (err) {
       els.map.innerHTML = '<div class="map-empty">Failed to load data: ' + err.message + '</div>';
@@ -388,6 +397,88 @@
   }
 
   function escapeAttr(s) { return escapeHtml(s); }
+
+  function renderSnapshotCharts() {
+    const all = MM.getAll();
+    const labels = all.map(function (s) { return s.name; });
+    const colors = all.map(function (s) { return BRAND_COLORS[s.id] || '#1D4ED8'; });
+    const raisedData = all.map(function (s) { return s.funding.total_eur_m; });
+    const arrData = all.map(function (s) { return s.traction.arr_eur_m; });
+
+    function barConfig(data, unit) {
+      return {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: data,
+            backgroundColor: colors,
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 32,
+          }],
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) { return MM.formatEur(ctx.parsed.x); },
+                title: function (ctx) { return ctx[0].label; },
+              },
+              backgroundColor: '#0F172A',
+              padding: 10,
+              cornerRadius: 8,
+              titleFont: { family: 'Inter', size: 12, weight: '600' },
+              bodyFont: { family: 'Inter', size: 12 },
+            },
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              grid: { color: '#F3F4F6' },
+              border: { dash: [3, 3] },
+              ticks: {
+                font: { family: 'Inter', size: 10 },
+                color: '#9CA3AF',
+                callback: function (v) { return MM.formatEur(v); },
+              },
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                font: { family: 'Inter', size: 12, weight: '600' },
+                color: '#0F172A',
+                callback: function (val, idx) {
+                  var s = all[idx];
+                  return s ? s.name : val;
+                },
+              },
+            },
+          },
+        },
+      };
+    }
+
+    new Chart(document.getElementById('chart-raised'), barConfig(raisedData, '€M'));
+    new Chart(document.getElementById('chart-arr'), barConfig(arrData, '€M'));
+
+    function renderLegend(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.innerHTML = all.map(function (s) {
+        return '<div class="legend-item">' +
+          '<span class="legend-dot" style="background:' + (BRAND_COLORS[s.id] || '#1D4ED8') + '"></span>' +
+          escapeHtml(s.name) +
+          '</div>';
+      }).join('');
+    }
+    renderLegend('legend-raised');
+    renderLegend('legend-arr');
+  }
 
   document.addEventListener('DOMContentLoaded', init);
 })();
